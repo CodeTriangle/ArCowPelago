@@ -89,11 +89,11 @@ class CowWorld(World):
         stars_per_race = self.options.race_star_allowed_locations.value
         max_stars = num_levels * stars_per_level + num_races * stars_per_race
 
-        # if self.options.total_stars > max_stars:
-        #     raise OptionError(
-        #         f"With {stars_per_level} stars per level and {stars_per_race} stars per race, "
-        #         f"the maximum amount of stars that can be placed is {max_stars}."
-        #     )
+        if self.options.total_stars > max_stars:
+            raise OptionError(
+                f"With {stars_per_level} stars per level and {stars_per_race} stars per race, "
+                f"the maximum amount of stars that can be placed is {max_stars}."
+            )
 
     def create_regions(self):
         menu = Region(
@@ -118,8 +118,8 @@ class CowWorld(World):
 
             for star_num in range(1, 4):
                 loc = CowLocation(self.player, level_star_locations_by_stars[star_num][level_num], region)
-                # if star_num > self.options.level_star_allowed_locations.value:
-                #     loc.item_rule = lambda item: not item.classification & ItemClassification.progression
+                if star_num > self.options.level_star_allowed_locations.value:
+                    loc.item_rule = lambda item: not item.classification & ItemClassification.progression
 
                 region.locations.append(loc)
 
@@ -147,8 +147,8 @@ class CowWorld(World):
 
             for star_num in range(1, 4):
                 loc = CowLocation(self.player, race_star_locations_by_stars[star_num][race_num], region)
-                # if star_num > self.options.race_star_allowed_locations.value:
-                #     loc.item_rule = lambda item: not item.classification & ItemClassification.progression
+                if star_num > self.options.race_star_allowed_locations.value:
+                    loc.item_rule = lambda item: not item.classification & ItemClassification.progression
 
                 region.locations.append(loc)
 

@@ -1,3 +1,4 @@
+from rule_builder.rules import Has
 from Options import OptionError
 import settings
 import typing
@@ -112,7 +113,10 @@ class CowWorld(World):
 
             self.multiworld.regions.append(region)
 
-            menu.connect(region, rule=lambda state: state.has(f"Level {level_num} Unlock", self.player))
+            if self.options.starting_level == level_num:
+                menu.connect(region)
+            else:
+                self.create_entrance(menu, region, Has(f"Level {level_num} Unlock"))
 
             region.locations.append(CowLocation(self.player, level_clear_locations[level_num], region))
 
@@ -138,10 +142,7 @@ class CowWorld(World):
 
             self.multiworld.regions.append(region)
 
-            if self.options.starting_level == race_num:
-                menu.connect(region)
-            else:
-                menu.connect(region, rule=lambda state: state.has(f"Race {race_num} Unlock", self.player))
+            self.create_entrance(menu, region, Has(f"Race {race_num} Unlock"))
 
             region.locations.append(CowLocation(self.player, race_clear_locations[race_num], region))
 

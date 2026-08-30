@@ -1,0 +1,21 @@
+{
+	"name": "Archipelago",
+	"namespace": "CodeTriangle",
+	"version_number": "0.1.0",
+	"description": "Archipelago integration mod for Cow",
+	"website_url": "https://github.com/CodeTriangle/ArCowPelago",
+	"dependencies": [],
+	"extra": {
+		"godot": {
+			"authors": ["CodeTriangle"],
+			"tags": ["Archipelago", "Randomizer"],
+			"description_rich": "",
+			"optional_dependencies": [],
+			"load_before": [],
+			"incompatibilities": [],
+			"compatible_mod_loader_version": ["7.0.1"],
+			"compatible_game_version": ["0.0.0"],
+			"config_schema": {}
+		}
+	}
+}

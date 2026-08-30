@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7y7nx2qgtb41"]
+
+[ext_resource type="Script" uid="uid://cfc5bo30kh3h2" path="res://mods-unpacked/CodeTriangle-Archipelago/ap_connect_panel.gd" id="1_sq1mw"]
+[ext_resource type="Texture2D" uid="uid://dw5uxmwwiuxbq" path="res://assets/orange-rectangle-fire-frame.png" id="2_x2fvk"]
+
+[node name="ApConnectPanel" type="CanvasLayer"]
+script = ExtResource("1_sq1mw")
+
+[node name="Panel" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(400, 315)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -310.0
+offset_top = -473.0
+offset_right = 310.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("2_x2fvk")
+expand_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -128.5
+offset_right = 200.0
+offset_bottom = 128.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Server" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Server"
+
+[node name="ServerField" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "archipelago.gg:38281"
+
+[node name="Player Name" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Slot Name"
+
+[node name="PlayerField" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Player"
+
+[node name="Password (optional)" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Password (optional)"
+
+[node name="PasswordField" type="LineEdit" parent="Panel/VBoxContainer"]
+layout_mode = 2
+secret = true
+
+[node name="ConnectButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Connect"
+
+[node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Close Menu"
+
+[node name="StatusLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1

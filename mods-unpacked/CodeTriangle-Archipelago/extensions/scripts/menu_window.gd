@@ -14,15 +14,18 @@ func _ready() -> void:
 	add_child(ap_connect_button)
 
 	ap_client = ap_connect_button.ap_client
-	ap_client.item_received.connect(
-		func (_item_name, _item_id):
-			recalculate_level_buttons()
-	)
+	ap_client.item_received.connect(_on_item_received)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	var connected = ap_client.connect_state == CowApClient.ConnectState.CONNECTED_TO_MULTIWORLD
 	level_select_button.disabled = not connected
+
+
+func _on_item_received(_item_name: String, _item: Dictionary):
+	if ap_client.timer != null and ap_client.timer.time_left > 0:
+		return
+	recalculate_level_buttons()
 
 
 func recalculate_level_buttons() -> void:

@@ -1,10 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://c7y7nx2qgtb41"]
 
-[ext_resource type="Script" uid="uid://cfc5bo30kh3h2" path="res://mods-unpacked/CodeTriangle-Archipelago/ap_connect_panel.gd" id="1_sq1mw"]
-[ext_resource type="Texture2D" uid="uid://dw5uxmwwiuxbq" path="res://assets/orange-rectangle-fire-frame.png" id="2_x2fvk"]
+[ext_resource type="Script" uid="uid://cfc5bo30kh3h2" path="res://mods-unpacked/CodeTriangle-Archipelago/scripts/ap_connect_panel.gd" id="1_tl8jg"]
+[ext_resource type="Texture2D" uid="uid://dw5uxmwwiuxbq" path="res://assets/orange-rectangle-fire-frame.png" id="2_41uhj"]
 
 [node name="ApConnectPanel" type="CanvasLayer"]
-script = ExtResource("1_sq1mw")
+script = ExtResource("1_tl8jg")
 
 [node name="Panel" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(400, 315)
@@ -19,7 +19,7 @@ offset_right = 310.0
 offset_bottom = -7.0
 grow_horizontal = 2
 grow_vertical = 0
-texture = ExtResource("2_x2fvk")
+texture = ExtResource("2_41uhj")
 expand_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel"]

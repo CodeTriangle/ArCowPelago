@@ -15,6 +15,10 @@ const BASE_RACE_STEAK_ID = 200000
 
 const STEAK_STRIDE = 100
 
+
+var timer: SceneTreeTimer
+
+
 func get_level_unlock_item_id(level: int) -> int:
 	return BASE_LEVEL_UNLOCK_ID + level
 
@@ -45,3 +49,9 @@ func get_level_steak_location_id(level: int, steak: int) -> int:
 
 func get_race_steak_location_id(race: int, steak: int) -> int:
 	return BASE_RACE_STEAK_ID + race * STEAK_STRIDE + steak
+
+
+func _set_connection_state(state: int, error: int = 0):
+	super(state, error)
+	if state == ConnectState.CONNECTED_TO_MULTIWORLD:
+		timer = get_tree().create_timer(0.5)

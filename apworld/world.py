@@ -77,6 +77,8 @@ class CowWorld(World):
         f"Level {race_num}": [ loc.name for loc in locations ] for race_num, locations in locations_by_race.items()
     }
 
+    goal_stars_amount: int = 0
+
     def create_item(self, name: str) -> CowItem:
         return CowItem(self.player, item_dict[name])
 
@@ -205,3 +207,11 @@ class CowWorld(World):
         )
 
         self.multiworld.itempool.extend(itempool)
+
+    def fill_slot_data(self) -> dict[str, typing.Any]:
+        return {
+            "total_stars": self.options.total_stars.value,
+            "goal_stars": self.goal_stars_amount,
+            "beefsanity": bool(self.options.beefsanity.value),
+            "goal_steaks": self.options.goal_steaks.value,
+        }

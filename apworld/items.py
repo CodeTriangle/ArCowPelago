@@ -12,14 +12,14 @@ class ItemInfo:
 base_level_unlock_id = 1000
 
 level_unlock_items = {
-    level_num: ItemInfo(id=base_level_unlock_id + level_num - 1, name=f"Level {level_num} Unlock")
+    level_num: ItemInfo(id=base_level_unlock_id + level_num, name=f"Level {level_num} Unlock")
     for level_num in range(1, num_levels + 1)
 }
 
 base_race_unlock_id = 2000
 
 race_unlock_items = {
-    race_num: ItemInfo(id=base_race_unlock_id + race_num - 1, name=f"Race {race_num} Unlock")
+    race_num: ItemInfo(id=base_race_unlock_id + race_num, name=f"Race {race_num} Unlock")
     for race_num in range(1, num_races + 1)
 }
 

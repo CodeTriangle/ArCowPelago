@@ -8,7 +8,7 @@ const CONFIG_PATH = "user://ap_connect.json"
 var mod_dir_path := ""
 var extensions_dir_path := ""
 var translations_dir_path := ""
-var ap_client: ApClient
+var ap_client: CowApClient
 var ap_ws_connection: ApWebSocketConnection
 var ap_connect_panel: ApConnectPanel
 
@@ -21,8 +21,10 @@ func _init() -> void:
 
 
 func install_script_extensions() -> void:
-	extensions_dir_path = mod_dir_path.path_join("extensions").path_join("scripts")
-	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("menu_window.gd"))
+	extensions_dir_path = mod_dir_path.path_join("extensions")
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/menu_window.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/game_window.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/steak.gd"))
 
 
 func add_translations() -> void:
@@ -57,7 +59,7 @@ func _ready() -> void:
 	ap_ws_connection = ApWebSocketConnection.new()
 	add_child(ap_ws_connection)
 
-	ap_client = ApClient.new(ap_ws_connection, client_config)
+	ap_client = CowApClient.new(ap_ws_connection, client_config)
 	add_child(ap_client)
 
 	var panel_scene: PackedScene = load("res://mods-unpacked/CodeTriangle-Archipelago/ap_connect_panel.tscn")

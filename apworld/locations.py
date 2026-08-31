@@ -20,12 +20,12 @@ level_star_locations_by_stars: dict[int, dict[int, LocationInfo]] = {
 locations_by_level: dict[int, list[LocationInfo]] = {}
 
 for level_num in range(1, num_levels + 1):
-    clear =  LocationInfo(id=base_level_clear_id + level_num - 1, name=f"Level {level_num} Clear")
+    clear = LocationInfo(id=base_level_clear_id + level_num, name=f"Level {level_num} Clear")
     level_clear_locations[level_num] = clear
 
     stars = [
-        LocationInfo(id=base_level_star_id + level_num * 3 + star_num - 1, name=f"Level {level_num} Clear ({star_num + 1} Star{'' if star_num == 1 else 's'})")
-        for star_num in range(3)
+        LocationInfo(id=base_level_star_id + level_num * 3 + star_num, name=f"Level {level_num} Clear ({star_num} Star{'' if star_num == 1 else 's'})")
+        for star_num in range(1, 4)
     ]
 
     for idx, item in enumerate(stars):
@@ -48,12 +48,12 @@ race_star_locations_by_stars: dict[int, dict[int, LocationInfo]] = {
 locations_by_race: dict[int, list[LocationInfo]] = {}
 
 for race_num in range(1, num_races + 1):
-    clear = LocationInfo(id=base_race_clear_id + race_num - 1, name=f"Race {race_num} Clear")
+    clear = LocationInfo(id=base_race_clear_id + race_num, name=f"Race {race_num} Clear")
     race_clear_locations[race_num] = clear
 
     stars = [
-        LocationInfo(id=base_race_star_id + race_num * 3 + star_num - 1, name=f"Race {race_num} Clear ({star_num + 1} Stars)")
-        for star_num in range(3)
+        LocationInfo(id=base_race_star_id + race_num * 3 + star_num, name=f"Race {race_num} Clear ({star_num} Star{'' if star_num == 1 else 's'})")
+        for star_num in range(1, 4)
     ]
 
     for idx, item in enumerate(stars):
@@ -87,10 +87,10 @@ race_steak_locations_by_level: dict[int, list[LocationInfo]] = {}
 for level_num, steak_amount in enumerate(level_steak_amounts, 1):
     steaks = [
         LocationInfo(
-            id=base_level_steak_id + steak_stride * level_num + steak_num - 1,
-            name=f"Level {level_num} Steak {steak_num + 1}"
+            id=base_level_steak_id + steak_stride * level_num + steak_num,
+            name=f"Level {level_num} Steak {steak_num}"
         )
-        for steak_num in range(steak_amount)
+        for steak_num in range(1, steak_amount + 1)
     ]
 
     level_steak_locations_by_level[level_num] = steaks
@@ -105,10 +105,10 @@ level_steak_locations = [
 for race_num, steak_amount in enumerate(race_steak_amounts, 1):
     steaks = [
         LocationInfo(
-            id=base_race_steak_id + steak_stride * race_num + steak_num - 1,
-            name=f"Race {race_num} Steak {steak_num + 1}"
+            id=base_race_steak_id + steak_stride * race_num + steak_num,
+            name=f"Race {race_num} Steak {steak_num}"
         )
-        for steak_num in range(steak_amount)
+        for steak_num in range(1, steak_amount + 1)
     ]
 
     race_steak_locations_by_level[race_num] = steaks

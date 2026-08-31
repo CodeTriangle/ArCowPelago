@@ -5,7 +5,7 @@
 ##
 ## In addition, provides methods for sending Client-Server commands, and high-level API
 ## for common workflows such as establishing the connection.
-class_name ApClient
+class_name GodotApClient
 extends Node
 # Hard-code mod name to avoid cyclical dependency
 var LOG_NAME = "CodeTriangle-Archipelago/GodotApClient"
@@ -130,6 +130,8 @@ var slot_data: Dictionary
 var slot_info: Dictionary
 var hint_points: int
 var player_tags: Array = []
+
+var received_item_ids: Dictionary[int, int] = {}
 
 var room_info: Dictionary
 var data_package: ApDataPackage
@@ -425,6 +427,8 @@ func _on_received_items(command):
 	# TODO: update missing and checked locations?
 	var items = command["items"]
 	for item in items:
+		var item_id = int(item["item"])
+		received_item_ids.set(item_id, received_item_ids.get(item_id, 0) + 1)
 		var item_name = null
 		if self.data_package:
 			item_name = data_package.item_id_to_name[item["item"]]

@@ -1,6 +1,7 @@
 extends "res://scripts/game_window.gd"
 
 var ap_client: CowApClient
+@onready var spike_ball: PackedScene = load("res://scenes/spiked_ball_rigid_body.tscn")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -47,3 +48,14 @@ func level_beaten():
 func _on_item_received(item_name: String, _item: Dictionary):
 	if item_name == "Milk Trap":
 		get_tree().call_group("player", "get_milked")
+	if item_name == "Spike Ball Trap":
+		var player_pos: Vector3 = player.position
+		var player_vel: Vector3 = player.velocity
+		for i in range(5):
+			var ball: RigidBody3D = spike_ball.instantiate()
+			var pos = player_pos - Vector3(sin(2*PI * i / 5) * 6, -30.0, cos(2*PI * i / 5) * 6)
+			ball.position = pos
+			ball.scale = Vector3(0.001, 0.001, 0.001)
+			ball.add_to_group("spiked_rigid")
+			ball.linear_velocity = player_vel + Vector3(randf_range(-10, 10), randf_range(-10, 10), randf_range(-10, 10))
+			get_tree().current_scene.add_child(ball)

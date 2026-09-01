@@ -6,7 +6,7 @@
 stacked_outline_count = 1
 stacked_outline_0/size = 5
 
-[node name="ApItemLabel" type="CanvasLayer"]
+[node name="CanvasLayer" type="CanvasLayer"]
 layer = 256
 script = ExtResource("1_b63sn")
 

@@ -9,7 +9,8 @@ func _ready() -> void:
 
 	play_button.disabled = true
 
-	ap_connect_button = ApConnectButton.new()
+	var connect_button_scene = load("res://mods-unpacked/CodeTriangle-Archipelago/scenes/ap_connect_button.tscn")
+	ap_connect_button = connect_button_scene.instantiate()
 	ap_connect_button.position = Vector2(535.0, 50.0)
 	add_child(ap_connect_button)
 

@@ -161,19 +161,19 @@ class CowWorld(World):
                     for info in race_steak_locations_by_level[race_num]
                 )
 
-        goal_stars_amount = self.options.total_stars.value * self.options.goal_star_percentage / 100
+        self.goal_stars_amount = self.options.total_stars.value * self.options.goal_star_percentage / 100
 
         if self.options.beefsanity:
             menu.add_event(
                 "Victory",
                 "Victory",
-                lambda state: state.has("Star", self.player, goal_stars_amount) and state.has("Steak", self.player, self.options.goal_steaks.value)
+                lambda state: state.has("Star", self.player, self.goal_stars_amount) and state.has("Steak", self.player, self.options.goal_steaks.value)
             )
         else:
             menu.add_event(
                 "Victory",
                 "Victory",
-                lambda state: state.has("Star", self.player, goal_stars_amount)
+                lambda state: state.has("Star", self.player, self.goal_stars_amount)
             )
 
     def create_items(self):

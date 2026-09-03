@@ -115,10 +115,7 @@ class CowWorld(World):
 
             self.multiworld.regions.append(region)
 
-            if self.options.starting_level == level_num:
-                menu.connect(region)
-            else:
-                self.create_entrance(menu, region, Has(f"Level {level_num} Unlock"))
+            self.create_entrance(menu, region, Has(f"Level {level_num} Unlock"))
 
             region.locations.append(CowLocation(self.player, level_clear_locations[level_num], region))
 

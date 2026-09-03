@@ -4,7 +4,7 @@ extends CanvasLayer
 const LOG_NAME = "CodeTriangle-Archipelago/ap_connect_panel"
 const CONFIG_PATH = "user://ap_connect.json"
 
-var ap_client
+var ap_client: CowApClient
 var _visible := false
 var _force_open := false
 var _going_to_menu := false
@@ -16,6 +16,9 @@ var _going_to_menu := false
 @onready var connect_button := $Panel/VBoxContainer/ConnectButton
 @onready var main_menu_button := $Panel/VBoxContainer/MainMenuButton
 @onready var status_label := $Panel/VBoxContainer/StatusLabel
+@onready var deathlink_box: CheckBox = $Panel/VBoxContainer/DeathlinkContainer/EnableBox
+@onready var deathlink_amnesty_slider: HSlider= $Panel/VBoxContainer/DeathlinkContainer/AmnestySlider
+@onready var deathlink_amnesty_label: Label = $Panel/VBoxContainer/DeathlinkContainer/AmnestyNumber
 
 func _ready() -> void:
 	
@@ -32,12 +35,20 @@ func _ready() -> void:
 	if FileAccess.file_exists(CONFIG_PATH):
 		var f = FileAccess.open(CONFIG_PATH, FileAccess.READ)
 		if f:
-			var parsed = JSON.parse_string(f.get_as_text())
+			var contents = f.get_as_text()
+			print(contents)
+			var parsed = JSON.parse_string(contents)
 			f.close()
 			if parsed:
 				server_field.text = parsed.get("ap_server", "")
 				player_field.text = parsed.get("ap_player", "")
 				password_field.text = parsed.get("ap_password", "")
+				deathlink_box.button_pressed = parsed.get("ap_deathlink", false)
+				deathlink_amnesty_slider.value = parsed.get("ap_amnesty", 1)
+				deathlink_amnesty_label.text = str(int(deathlink_amnesty_slider.value))
+
+	_on_deathlink_box_checked(deathlink_box.button_pressed)
+	ap_client.deathlink_amnesty = int(deathlink_amnesty_slider.value)
 
 	connect_button.pressed.connect(_on_connect_pressed)
 	main_menu_button.pressed.connect(_on_main_menu_pressed)
@@ -48,6 +59,10 @@ func _ready() -> void:
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	panel.process_mode = Node.PROCESS_MODE_ALWAYS
+
+	deathlink_box.toggled.connect(_on_deathlink_box_checked)
+
+	deathlink_amnesty_slider.value_changed.connect(_on_amnesty_slider_changed)
 
 func _process(_delta: float) -> void:
 	if _visible and Input.mouse_mode != Input.MOUSE_MODE_VISIBLE:
@@ -132,7 +147,9 @@ func _on_connect_pressed() -> void:
 		f.store_string(JSON.stringify({
 			"ap_server": server,
 			"ap_player": player,
-			"ap_password": password
+			"ap_password": password,
+			"ap_deathlink": deathlink_box.button_pressed,
+			"ap_amnesty": deathlink_amnesty_slider.value,
 		}, "\t"))
 		f.close()
 
@@ -194,5 +211,13 @@ func _update_status(state: int = -1, error: int = 0) -> void:
 			get_tree().paused = false
 		ap_client.ConnectState.DISCONNECTING:
 			status_label.text = "Disconnecting..."
-		ap_client.ConnectState.SEED_MISMATCH:
-			status_label.text = "Error: Seed mismatch. This save file was started on a different seed."
+
+func _on_amnesty_slider_changed(value: float) -> void:
+	deathlink_amnesty_label.text = str(int(value))
+	ap_client.deathlink_amnesty = int(value)
+
+func _on_deathlink_box_checked(should_enable: bool) -> void:
+	if should_enable:
+		ap_client.enable_deathlink()
+	else:
+		ap_client.disable_deathlink()

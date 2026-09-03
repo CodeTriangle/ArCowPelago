@@ -17,6 +17,7 @@ const STEAK_STRIDE = 100
 
 
 var timer: SceneTreeTimer
+var deathlink_amnesty: int = 0
 
 
 func get_level_unlock_item_id(level: int) -> int:

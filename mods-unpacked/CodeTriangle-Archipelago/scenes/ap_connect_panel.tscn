@@ -61,6 +61,36 @@ text = "Password (optional)"
 layout_mode = 2
 secret = true
 
+[node name="Deathlink" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Deathlink"
+
+[node name="DeathlinkContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Enable" type="Label" parent="Panel/VBoxContainer/DeathlinkContainer"]
+layout_mode = 2
+text = "Enable"
+
+[node name="EnableBox" type="CheckBox" parent="Panel/VBoxContainer/DeathlinkContainer"]
+layout_mode = 2
+
+[node name="Amnesty" type="Label" parent="Panel/VBoxContainer/DeathlinkContainer"]
+layout_mode = 2
+tooltip_text = "The number of deaths you must trigger before a deathlink is sent to others."
+text = "Amnesty:"
+
+[node name="AmnestyNumber" type="Label" parent="Panel/VBoxContainer/DeathlinkContainer"]
+layout_mode = 2
+text = "25"
+
+[node name="AmnestySlider" type="HSlider" parent="Panel/VBoxContainer/DeathlinkContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+value = 25.0
+tick_count = 10
+
 [node name="ConnectButton" type="Button" parent="Panel/VBoxContainer"]
 layout_mode = 2
 text = "Connect"

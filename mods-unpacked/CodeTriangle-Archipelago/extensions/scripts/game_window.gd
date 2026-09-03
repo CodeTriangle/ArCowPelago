@@ -51,11 +51,11 @@ func _on_item_received(item_name: String, _item: Dictionary):
 	if item_name == "Spike Ball Trap":
 		var player_pos: Vector3 = player.position
 		var player_vel: Vector3 = player.velocity
-		for i in range(5):
-			var ball: RigidBody3D = spike_ball.instantiate()
-			var pos = player_pos - Vector3(sin(2*PI * i / 5) * 6, -30.0, cos(2*PI * i / 5) * 6)
-			ball.position = pos
-			ball.scale = Vector3(0.001, 0.001, 0.001)
-			ball.add_to_group("spiked_rigid")
-			ball.linear_velocity = player_vel + Vector3(randf_range(-10, 10), randf_range(-10, 10), randf_range(-10, 10))
-			get_tree().current_scene.add_child(ball)
+		var ball: RigidBody3D = spike_ball.instantiate()
+		var pos = player_pos - Vector3(0, -30.0, 0)
+		ball.position = pos
+		ball.add_to_group("spiked_rigid")
+		ball.linear_velocity = player_vel + Vector3(randf_range(-10, 10), randf_range(-10, 10), randf_range(-10, 10))
+		get_tree().current_scene.add_child(ball)
+	if item_name == "Moo":
+		SoundManager.play_sfx("moo")

@@ -27,6 +27,9 @@ func _ready() -> void:
 	ap_client.connection_state_changed.connect(_on_connection_state_changed)
 	ap_client.item_received.connect(_on_item_received)
 
+	set_text_box_texts()
+	_on_connection_state_changed(ap_client.connect_state, null)
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -70,16 +73,16 @@ func check_for_goal() -> bool:
 
 func _on_connection_state_changed(state: CowApClient.ConnectState, _error):
 	if state == CowApClient.ConnectState.CONNECTED_TO_MULTIWORLD:
-		print("CONNECTED_TO_MULTIWORLD")
 		goal_stars = int(ap_client.slot_data["goal_stars"])
 		goal_steaks = int(ap_client.slot_data["goal_steaks"])
+		current_stars = int(ap_client.received_item_ids.get(int(ap_client.data_package.item_name_to_id["Star"]), 0))
+		current_steaks = int(ap_client.received_item_ids.get(int(ap_client.data_package.item_name_to_id["Steak"]), 0))
 		set_text_box_texts()
 	else:
 		star_counter.visible = false
 		steak_counter.visible = false
 
 func _on_item_received(item_name: String, _item: Dictionary):
-	print("ITEM RECEIVED")
 	if item_name == "Star":
 		current_stars += 1
 		set_text_box_texts()

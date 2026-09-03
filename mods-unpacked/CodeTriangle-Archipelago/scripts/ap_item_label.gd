@@ -21,7 +21,12 @@ func _on_item_received(item_name: String, item: Dictionary):
 	if tween != null:
 		tween.kill()
 
-	label.text = "Received " + item_name + " from " + ap_client.players[int(item["player"])]["name"]
+	var player_name = ap_client._resolve_player_name(item["player"])
+	set_text("Received " + item_name + " from " + player_name)
+
+
+func set_text(text: String):
+	label.text = text 
 	label.modulate.a = 1.0
 
 	tween = create_tween()

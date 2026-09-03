@@ -310,13 +310,13 @@ func connect_to_multiworld(get_data_package: bool = true) -> int:
 
 	# Mod-specific: Save the connection parameters in the configuration file so
 	# the user doesn't need to enter them twice.
-	config["ap_server"] = server
-	config["ap_player"] = player
-	config["ap_password"] = password
-	var f = FileAccess.open("user://ap_connect.json", FileAccess.WRITE)
-	if f:
-		f.store_string(JSON.stringify(config, "\t"))
-		f.close()
+	# config["ap_server"] = server
+	# config["ap_player"] = player
+	# config["ap_password"] = password
+	# var f = FileAccess.open("user://ap_connect.json", FileAccess.WRITE)
+	# if f:
+	# 	f.store_string(JSON.stringify(config, "\t"))
+	# 	f.close()
 
 	return ConnectResult.SUCCESS
 
@@ -406,9 +406,21 @@ func add_player_tag(tag: String):
 	if self.connect_state == ConnectState.CONNECTED_TO_MULTIWORLD:
 		websocket_client.send_connect_update(-1, self.player_tags)
 
+func remove_player_tag(tag: String):
+	# Remove a tag from the player slot and send a ConnectUpdate if connected.
+	var index = player_tags.find("DeathLink")
+	if index != -1:
+		player_tags.remove_at(index)
+		if self.connect_state == ConnectState.CONNECTED_TO_MULTIWORLD:
+			websocket_client.send_connect_update(-1, self.player_tags)
+
 func enable_deathlink():
 	# Convenience method to set the "DeathLink" tag for the slot
 	add_player_tag("DeathLink")
+
+func disable_deathlink():
+	# Convenience method to set the "DeathLink" tag for the slot
+	remove_player_tag("DeathLink")
 
 func send_deathlink(source: String = "", cause: String = ""):
 	# Convenience method for sending a DeathLink bounce packet

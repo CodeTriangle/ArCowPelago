@@ -26,6 +26,7 @@ func install_script_extensions() -> void:
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/menu_window.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/game_window.gd"))
 	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/steak.gd"))
+	ModLoaderMod.install_script_extension(extensions_dir_path.path_join("scripts/playerScript.gd"))
 
 
 func add_translations() -> void:

@@ -10,8 +10,22 @@ from .locations import all_locations, level_clear_locations, level_star_location
     race_clear_locations, race_star_locations_by_stars, race_star_locations, level_steak_locations_by_level, \
     level_steak_locations, race_steak_locations_by_level, race_steak_locations, locations_by_level, locations_by_race, \
     LocationInfo, level_steak_amounts, race_steak_amounts
-from worlds.AutoWorld import World
-from BaseClasses import Region, Location, Entrance, Item, ItemClassification
+from worlds.AutoWorld import World, WebWorld
+from BaseClasses import Region, Location, Entrance, Item, ItemClassification, Tutorial
+
+
+class CowWeb(WebWorld):
+    theme = "stone"
+
+    setup_en = Tutorial(
+        "Multiworld Setup Guide",
+        "A guide to playing Cow with Archipelago",
+        "English",
+        "setup_en.md",
+        "setup/en",
+        ["CodeTriangle"]
+    )
+    tutorials = [setup_en]
 
 
 class CowItem(Item):
@@ -43,7 +57,9 @@ class CowLocation(Location):
 
 
 class CowWorld(World):
-    """Insert description of the world/game here."""
+    """The steaks have never been higher! Cow is the one and only fast-paced game about a cow riding a skateboard in
+    a volcano above a pool of lava 🤘. Hop on your deck and milk each level, or become a well-done dinner.
+    """
     game = "Cow"  # name of the game/world
     options_dataclass = CowOptions  # options the player can set
     options: CowOptions  # typing hints for option results

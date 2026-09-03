@@ -29,9 +29,33 @@ func _on_item_received(_item_name: String, _item: Dictionary):
 	recalculate_level_buttons()
 
 
+func add_star(parent: Node):
+	var star_icon = TextureRect.new()
+	star_icon.texture = star_filled
+	star_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	star_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	star_icon.custom_minimum_size = Vector2(24, 24)
+	star_icon.position = Vector2(-8, -8)
+	star_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(star_icon)
+
+
+func add_steak(parent: Node):
+	var steak_icon = TextureRect.new()
+	steak_icon.texture = steak_texture
+	steak_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	steak_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	steak_icon.custom_minimum_size = Vector2(24, 24)
+	steak_icon.position = Vector2(18, -8)
+	steak_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(steak_icon)
+
+
 func recalculate_level_buttons() -> void:
 	for page: VBoxContainer in pages:
 		for level_button: Button in page.get_children()[0].get_children():
+			for node in level_button.get_children():
+				level_button.remove_child(node)
 			var button_name = level_button.name
 
 			var number
@@ -40,9 +64,21 @@ func recalculate_level_buttons() -> void:
 			if button_name.begins_with("Level"):
 				number = int(button_name.substr(5))
 				item_id = ap_client.get_level_unlock_item_id(number)
+
+				if ap_client.has_all_stars_in_level(number):
+					add_star(level_button)
+
+				if ap_client.has_all_steaks_in_level(number):
+					add_steak(level_button)
 			elif button_name.begins_with("Race"):
 				number = int(button_name.substr(4))
 				item_id = ap_client.get_race_unlock_item_id(number)
+
+				if ap_client.has_all_stars_in_race(number):
+					add_star(level_button)
+
+				if ap_client.has_all_steaks_in_race(number):
+					add_steak(level_button)
 
 			level_button.disabled = ap_client.received_item_ids.get(item_id, 0) == 0
 

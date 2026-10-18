@@ -6,9 +6,9 @@
 
 [node name="Button" type="TextureButton"]
 offset_left = 535.0
-offset_top = 50.0
+offset_top = 100.0
 offset_right = 535.0
-offset_bottom = 50.0
+offset_bottom = 100.0
 script = ExtResource("1_gv1db")
 metadata/_custom_type_script = "uid://dy2kcgocfwduf"
 

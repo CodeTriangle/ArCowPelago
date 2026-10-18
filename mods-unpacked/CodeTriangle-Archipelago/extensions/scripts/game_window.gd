@@ -11,23 +11,28 @@ func _ready() -> void:
 	ap_client.item_received.connect(_on_item_received)
 
 
+func _on_next_button_pressed():
+	pass
+
+
 func level_beaten():
 	super()
 
 	var current_level_path = levels[current_level_index]
 	var true_level_name = current_level_path.get_file().trim_suffix(".tscn")
 
-	var clear_loc
-	var star_loc_base
+	var pack: CowApClient.LevelPackInfo
+	var num
 
 	if true_level_name.begins_with("level_"):
-		var num = int(true_level_name.trim_prefix("level_"))
-		clear_loc = ap_client.get_level_clear_location_id(num)
-		star_loc_base = ap_client.get_level_star_low_location_id(num)
+		num = int(true_level_name.trim_prefix("level_"))
+		pack = ap_client.ascended_levels if Global.is_ascended else ap_client.levels
 	elif true_level_name.begins_with("race_"):
-		var num = int(true_level_name.trim_prefix("race_"))
-		clear_loc = ap_client.get_race_clear_location_id(num)
-		star_loc_base = ap_client.get_race_star_low_location_id(num)
+		num = int(true_level_name.trim_prefix("race_"))
+		pack = ap_client.races
+
+	var clear_loc = pack.get_clear_location_id(num)
+	var star_loc_base = pack.get_star_low_location_id(num)
 
 	ap_client.check_location(clear_loc)
 

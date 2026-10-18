@@ -11,11 +11,12 @@ func _ready() -> void:
 
 	var connect_button_scene = load("res://mods-unpacked/CodeTriangle-Archipelago/scenes/ap_connect_button.tscn")
 	ap_connect_button = connect_button_scene.instantiate()
-	ap_connect_button.position = Vector2(535.0, 50.0)
 	add_child(ap_connect_button)
 
 	ap_client = ap_connect_button.ap_client
 	ap_client.item_received.connect(_on_item_received)
+
+	bonus_levels_button.disabled = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -51,36 +52,55 @@ func add_steak(parent: Node):
 	parent.add_child(steak_icon)
 
 
+func refresh_level_select() -> void:
+	super()
+	if ap_client:
+		recalculate_level_buttons()
+
+
 func recalculate_level_buttons() -> void:
+	var active_levels = levels
+	if OS.has_feature("demo"):
+		active_levels = demo_levels
+	elif Global.is_ascended:
+		active_levels = ascended_levels
+
+	var index = 0
 	for page: VBoxContainer in pages:
 		for level_button: Button in page.get_children()[0].get_children():
 			for node in level_button.get_children():
 				level_button.remove_child(node)
-			var button_name = level_button.name
 
 			var number
+			var pack: CowApClient.LevelPackInfo
 			var item_id
 
-			if button_name.begins_with("Level"):
-				number = int(button_name.substr(5))
-				item_id = ap_client.get_level_unlock_item_id(number)
+			if index >= len(active_levels):
+				continue
+			var level_path = active_levels[index]
+			var true_level_name = level_path.get_file().trim_suffix(".tscn")
 
-				if ap_client.has_all_stars_in_level(number):
-					add_star(level_button)
+			if true_level_name.begins_with("level_"):
+				number = int(true_level_name.substr(6))
+				pack = ap_client.ascended_levels if Global.is_ascended else ap_client.levels
+			elif true_level_name.begins_with("race_"):
+				number = int(true_level_name.substr(5))
+				pack = ap_client.races
 
-				if ap_client.has_all_steaks_in_level(number):
-					add_steak(level_button)
-			elif button_name.begins_with("Race"):
-				number = int(button_name.substr(4))
-				item_id = ap_client.get_race_unlock_item_id(number)
+			item_id = pack.get_unlock_item_id(number)
 
-				if ap_client.has_all_stars_in_race(number):
-					add_star(level_button)
+			if pack.has_all_stars(number):
+				print(pack)
+				print("adding star")
+				add_star(level_button)
 
-				if ap_client.has_all_steaks_in_race(number):
-					add_steak(level_button)
+			if pack.has_all_steaks(number):
+				print("adding steak")
+				add_steak(level_button)
 
 			level_button.disabled = ap_client.received_item_ids.get(item_id, 0) == 0
+
+			index += 1
 
 
 func _on_level_select_button_pressed() -> void:

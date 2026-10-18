@@ -72,7 +72,7 @@ class LocationPack:
         self.star_locations = [loc for locs in self.star_locations_by_stars.values() for loc in locs.values()]
 
         self.base_steak_id = LocationPack._rolling_base_steak_id
-        LocationPack._rolling_base_clear_id += 100000
+        LocationPack._rolling_base_steak_id += 100000
 
         self.steak_locations_by_level: dict[int, list[LocationInfo]] = {}
 
@@ -80,7 +80,7 @@ class LocationPack:
             steaks = [
                 LocationInfo(
                     id=self.base_steak_id + LocationPack._steak_stride * level_num + steak_num,
-                    name=f"Level {level_num} Steak {steak_num}"
+                    name=f"{tag} {level_num} Steak {steak_num}"
                 )
                 for steak_num in range(1, steak_amount + 1)
             ]

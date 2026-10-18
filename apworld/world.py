@@ -2,7 +2,7 @@ from rule_builder.rules import Has
 from Options import OptionError, Option
 import settings
 import typing
-from .options import CowOptions, StartingLevel
+from .options import CowOptions, StartingLevel, LevelSelect
 from .constants import num_levels, num_races
 from .items import all_items, item_packs, level_items, progression_items, filler_items, \
     trap_items, item_dict, star_item, steak_item, ItemInfo
@@ -221,4 +221,5 @@ class CowWorld(World):
             "goal_stars": self.goal_stars_amount,
             "beefsanity": bool(self.options.beefsanity.value),
             "goal_steaks": self.options.goal_steaks.value,
+            "goal_level": list(LevelSelect.tuple_map[self.options.goal_level.value]),
         }

@@ -119,6 +119,7 @@ class CowWorld(World):
         self.allowed_locations_by_tag = {
             'Level': self.options.level_star_allowed_locations,
             'Race': self.options.race_star_allowed_locations,
+            'Ascended Level': self.options.ascended_level_star_allowed_locations,
         }
 
         if self.options.starting_level.value == self.options.goal_level.value:

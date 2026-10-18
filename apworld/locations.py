@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .constants import num_levels, num_races, level_steak_amounts, race_steak_amounts
+from .constants import num_levels, num_races, level_steak_amounts, race_steak_amounts, ascended_steak_amounts
 
 @dataclass
 class LocationInfo:
@@ -97,6 +97,7 @@ class LocationPack:
 location_packs: dict[str, LocationPack] = {
     'Level': LocationPack('Level', level_steak_amounts),
     'Race': LocationPack('Race', race_steak_amounts),
+    'Ascended Level': LocationPack('Ascended Level', ascended_steak_amounts),
 }
 
 all_locations: list[LocationInfo] = [

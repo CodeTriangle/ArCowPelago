@@ -15,3 +15,9 @@ level_steak_amounts = [
 
 race_steak_amounts = [ 4, 5, 4, 5, 4, 7, 4, 3 ]
 
+ascended_steak_amounts = [
+    2, 3, 3, 2, 2,
+    2, 2, 4, 2, 3,
+    3, 3, 3, 3, 10,
+    3, 4, 5, 4, 4,
+]

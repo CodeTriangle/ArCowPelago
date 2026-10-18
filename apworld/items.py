@@ -1,7 +1,7 @@
 from BaseClasses import ItemClassification
 from dataclasses import dataclass
 
-from .constants import num_levels, num_races
+from .constants import num_levels, num_races, num_ascended_levels
 
 @dataclass
 class ItemInfo:
@@ -34,6 +34,7 @@ class ItemPack:
 item_packs: dict[str, ItemPack] = {
     'Level': ItemPack('Level', num_levels),
     'Race': ItemPack('Race', num_races),
+    'Ascended Level': ItemPack('Ascended Level', num_ascended_levels),
 }
 
 base_race_unlock_id = 2000

@@ -7,17 +7,6 @@ from .locations import location_packs, LocationInfo
 from .items import item_packs, ItemInfo
 
 
-class LevelStarAllowedLocations(Range):
-    """
-    The number of star locations per level that are permitted to have progression items.
-    """
-
-    range_start = 1
-    range_end = 3
-
-    default = 3
-
-
 class LevelSelect(Choice):
     """
     Abstract option for any time you need to select a level
@@ -69,9 +58,31 @@ class GoalLevel(LevelSelect):
     default = 2008
 
 
+class LevelStarAllowedLocations(Range):
+    """
+    The number of star locations per level that are permitted to have progression items.
+    """
+
+    range_start = 1
+    range_end = 3
+
+    default = 3
+
+
 class RaceStarAllowedLocations(Range):
     """
     The number of star locations per race that are permitted to have progression items.
+    """
+
+    range_start = 1
+    range_end = 3
+
+    default = 3
+
+
+class AscendedLevelStarAllowedLocations(Range):
+    """
+    The number of star locations per ascended level that are permitted to have progression items.
     """
 
     range_start = 1
@@ -132,10 +143,11 @@ class TrapChance(Range):
 
 @dataclass
 class CowOptions(PerGameCommonOptions):
-    level_star_allowed_locations: LevelStarAllowedLocations
     starting_level: StartingLevel
     goal_level: GoalLevel
+    level_star_allowed_locations: LevelStarAllowedLocations
     race_star_allowed_locations: RaceStarAllowedLocations
+    ascended_level_star_allowed_locations: AscendedLevelStarAllowedLocations
     total_stars: TotalStars
     goal_star_percentage: GoalStars
     beefsanity: Beefsanity

@@ -1,7 +1,7 @@
 {
 	"name": "Archipelago",
 	"namespace": "CodeTriangle",
-	"version_number": "0.1.0",
+	"version_number": "0.2.0",
 	"description": "Archipelago integration mod for Cow",
 	"website_url": "https://github.com/CodeTriangle/ArCowPelago",
 	"dependencies": [],

@@ -1,5 +1,10 @@
+import random
+
 from dataclasses import dataclass
-from Options import Range, Toggle, PerGameCommonOptions
+from Options import Range, Toggle, PerGameCommonOptions, Choice
+
+from .locations import location_packs, LocationInfo
+from .items import item_packs, ItemInfo
 
 
 class LevelStarAllowedLocations(Range):
@@ -13,15 +18,55 @@ class LevelStarAllowedLocations(Range):
     default = 3
 
 
-class StartingLevel(Range):
+class LevelSelect(Choice):
+    """
+    Abstract option for any time you need to select a level
+    """
+    pass
+
+    tuple_map = {
+        info.id: (tag, num)
+        for tag, pack in item_packs.items()
+        for num, info in pack.unlock_items.items()
+    }
+    """
+    Map of values to tag and number, used to get the actual item info
+    """
+
+    def unlock_item(self) -> ItemInfo:
+        tag, num = self.tuple_map[self.value]
+        return item_packs[tag].unlock_items[num]
+
+    def clear_loc(self) -> LocationInfo:
+        tag, num = self.tuple_map[self.value]
+        return location_packs[tag].clear_locations[num]
+
+# evil post-metaclass hacking
+LevelSelect.name_lookup = {
+    idnum: f"{tag.lower().replace(' ', '_')}_{num}"
+    for idnum, (tag, num) in LevelSelect.tuple_map.items()
+}
+
+LevelSelect.options = {
+    name: idnum
+    for idnum, name in LevelSelect.name_lookup.items()
+}
+
+
+class StartingLevel(LevelSelect):
     """
     The level that the player starts with.
     """
 
-    range_start = 1
-    range_end = 79
+    default = 1001
 
-    default = 1
+
+class GoalLevel(LevelSelect):
+    """
+    The level that the player must complete to goal.
+    """
+
+    default = 2008
 
 
 class RaceStarAllowedLocations(Range):
@@ -89,6 +134,7 @@ class TrapChance(Range):
 class CowOptions(PerGameCommonOptions):
     level_star_allowed_locations: LevelStarAllowedLocations
     starting_level: StartingLevel
+    goal_level: GoalLevel
     race_star_allowed_locations: RaceStarAllowedLocations
     total_stars: TotalStars
     goal_star_percentage: GoalStars

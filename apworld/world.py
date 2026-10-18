@@ -1,15 +1,12 @@
 from rule_builder.rules import Has
-from Options import OptionError
+from Options import OptionError, Option
 import settings
 import typing
-from .options import CowOptions
+from .options import CowOptions, StartingLevel
 from .constants import num_levels, num_races
-from .items import all_items, level_unlock_items, race_unlock_items, level_items, progression_items, filler_items, \
+from .items import all_items, item_packs, level_items, progression_items, filler_items, \
     trap_items, item_dict, star_item, steak_item, ItemInfo
-from .locations import all_locations, level_clear_locations, level_star_locations_by_stars, level_star_locations, \
-    race_clear_locations, race_star_locations_by_stars, race_star_locations, level_steak_locations_by_level, \
-    level_steak_locations, race_steak_locations_by_level, race_steak_locations, locations_by_level, locations_by_race, \
-    LocationInfo, level_steak_amounts, race_steak_amounts
+from .locations import all_locations, location_packs, LocationInfo
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Region, Location, Entrance, Item, ItemClassification, Tutorial
 
@@ -73,27 +70,32 @@ class CowWorld(World):
     location_name_to_id = {location.name: location.id for location in all_locations}
 
     item_name_groups = {
-        "Level Unlocks": [ item.name for item in level_unlock_items.values() ],
-        "Race Unlocks": [ item.name for item in race_unlock_items.values() ],
-        "Progression": [ item.name for item in progression_items ],
-        "Filler": [ item.name for item in filler_items ],
-        "Trap": [ item.name for item in trap_items ],
+        "Progression": { item.name for item in progression_items },
+        "Filler": { item.name for item in filler_items },
+        "Trap": { item.name for item in trap_items },
+    } | {
+        f"{tag} Unlocks": { item.name for item in pack.unlock_items.values() }
+        for tag, pack in item_packs.items()
     }
 
+    # list comprehension from hell
     location_name_groups = {
-        "Level Clears": [ loc.name for loc in level_clear_locations.values() ],
-        "Level Star Clears": [ loc.name for loc in level_star_locations ],
-        "Race Clears": [ loc.name for loc in race_clear_locations.values() ],
-        "Race Star Clears": [ loc.name for loc in race_star_locations ],
-        "Level Steaks": [ loc.name for loc in level_steak_locations ],
-        "Race Steaks": [ loc.name for loc in race_steak_locations ],
-    } | {
-        f"Level {level_num}": [ loc.name for loc in locations ] for level_num, locations in locations_by_level.items()
-    } | {
-        f"Level {race_num}": [ loc.name for loc in locations ] for race_num, locations in locations_by_race.items()
+        k: v
+        for tag, pack in location_packs.items()
+        for k, v in (
+            (f"{tag} Clears", { loc.name for loc in pack.clear_locations.values() }),
+            (f"{tag} Star Clears", { loc.name for loc in pack.star_locations }),
+            (f"{tag} Steaks", { loc.name for loc in pack.steak_locations }),
+            *(
+                (f"{tag} {level_num}", { loc.name for loc in locations })
+                for level_num, locations in pack.locations_by_level.items()
+            )
+        )
     }
 
     goal_stars_amount: int = 0
+
+    allowed_locations_by_tag: dict[str, Option]
 
     def create_item(self, name: str) -> CowItem:
         return CowItem(self.player, item_dict[name])
@@ -114,6 +116,14 @@ class CowWorld(World):
                 f"the maximum amount of stars that can be placed is {max_stars}."
             )
 
+        self.allowed_locations_by_tag = {
+            'Level': self.options.level_star_allowed_locations,
+            'Race': self.options.race_star_allowed_locations,
+        }
+
+        if self.options.starting_level.value == self.options.goal_level.value:
+            raise OptionError(f"Starting level cannot be equal to goal level")
+
     def create_regions(self):
         menu = Region(
             name=f"Menu",
@@ -122,57 +132,32 @@ class CowWorld(World):
         )
         self.multiworld.regions.append(menu)
 
-        for level_num in range(1, num_levels + 1):
-            region = Region(
-                name=f"Level {level_num}",
-                multiworld=self.multiworld,
-                player=self.player,
-            )
-
-            self.multiworld.regions.append(region)
-
-            self.create_entrance(menu, region, Has(f"Level {level_num} Unlock"))
-
-            region.locations.append(CowLocation(self.player, level_clear_locations[level_num], region))
-
-            for star_num in range(1, 4):
-                loc = CowLocation(self.player, level_star_locations_by_stars[star_num][level_num], region)
-                if star_num > self.options.level_star_allowed_locations.value:
-                    loc.item_rule = lambda item: not item.classification & ItemClassification.progression
-
-                region.locations.append(loc)
-
-            if self.options.beefsanity.value:
-                region.locations.extend(
-                    CowLocation(self.player, info, region)
-                    for info in level_steak_locations_by_level[level_num]
+        for tag, pack in location_packs.items():
+            for level_num in pack.clear_locations:
+                region = Region(
+                    name=f"{tag} {level_num}",
+                    multiworld=self.multiworld,
+                    player=self.player,
                 )
 
-        for race_num in range(1, num_races + 1):
-            region = Region(
-                name=f"Race {race_num}",
-                multiworld=self.multiworld,
-                player=self.player,
-            )
+                self.multiworld.regions.append(region)
 
-            self.multiworld.regions.append(region)
+                self.create_entrance(menu, region, Has(f"{tag} {level_num} Unlock"))
 
-            self.create_entrance(menu, region, Has(f"Race {race_num} Unlock"))
+                region.locations.append(CowLocation(self.player, pack.clear_locations[level_num], region))
 
-            region.locations.append(CowLocation(self.player, race_clear_locations[race_num], region))
+                for star_num in range(1, 4):
+                    loc = CowLocation(self.player, pack.star_locations_by_stars[star_num][level_num], region)
+                    if star_num > self.allowed_locations_by_tag[tag].value:
+                        loc.item_rule = lambda item: not item.classification & ItemClassification.progression
 
-            for star_num in range(1, 4):
-                loc = CowLocation(self.player, race_star_locations_by_stars[star_num][race_num], region)
-                if star_num > self.options.race_star_allowed_locations.value:
-                    loc.item_rule = lambda item: not item.classification & ItemClassification.progression
+                    region.locations.append(loc)
 
-                region.locations.append(loc)
-
-            if self.options.beefsanity.value:
-                region.locations.extend(
-                    CowLocation(self.player, info, region)
-                    for info in race_steak_locations_by_level[race_num]
-                )
+                if self.options.beefsanity.value:
+                    region.locations.extend(
+                        CowLocation(self.player, info, region)
+                        for info in pack.steak_locations_by_level[level_num]
+                    )
 
         self.goal_stars_amount = self.options.total_stars.value * self.options.goal_star_percentage / 100
 
@@ -180,19 +165,26 @@ class CowWorld(World):
             menu.add_event(
                 "Victory",
                 "Victory",
-                lambda state: state.has("Star", self.player, self.goal_stars_amount) and state.has("Steak", self.player, self.options.goal_steaks.value)
+                lambda state: (
+                    state.has("Star", self.player, self.goal_stars_amount) and
+                    state.has("Steak", self.player, self.options.goal_steaks.value) and
+                    state.can_reach_location(self.options.goal_level.clear_loc().name, self.player)
+                )
             )
         else:
             menu.add_event(
                 "Victory",
                 "Victory",
-                lambda state: state.has("Star", self.player, self.goal_stars_amount)
+                lambda state: (
+                    state.has("Star", self.player, self.goal_stars_amount) and
+                    state.can_reach_location(self.options.goal_level.clear_loc().name, self.player)
+                )
             )
 
     def create_items(self):
         itempool = []
 
-        starting_level_unlock = CowItem(self.player, level_unlock_items[self.options.starting_level.value])
+        starting_level_unlock = CowItem(self.player, self.options.starting_level.unlock_item())
         self.multiworld.push_precollected(starting_level_unlock)
 
         itempool.extend(
@@ -209,7 +201,9 @@ class CowWorld(World):
         if self.options.beefsanity.value:
             itempool.extend(
                 CowItem(self.player, steak_item)
-                for _ in range(sum(race_steak_amounts) + sum(level_steak_amounts))
+                for _ in range(
+                    sum(len(pack.steak_locations) for pack in location_packs.values())
+                )
             )
 
         num_filler_items = len(self.multiworld.regions.location_cache[self.player]) - len(itempool) - 1

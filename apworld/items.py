@@ -9,23 +9,39 @@ class ItemInfo:
     name: str
     classification: ItemClassification = ItemClassification.progression
 
-base_level_unlock_id = 1000
+class ItemPack:
+    """Stores data about a group of items with a shared tag"""
 
-level_unlock_items = {
-    level_num: ItemInfo(id=base_level_unlock_id + level_num, name=f"Level {level_num} Unlock")
-    for level_num in range(1, num_levels + 1)
+    # STATIC MEMBERS
+    _rolling_base_unlock_id: int = 1000
+    """(Static member) the base id of clear locations. Updated every time this class is instantiated."""
+
+    # INSTANCE MEMBERS
+    base_unlock_id: int
+    """The base id of unlock items"""
+    unlock_items: dict[int, ItemInfo]
+    """Items that unlock levels, by the level they unlock"""
+
+    def __init__(self, tag: str, amount: int):
+        self.base_unlock_id = ItemPack._rolling_base_unlock_id
+        ItemPack._rolling_base_unlock_id += 1000
+
+        self.unlock_items = {
+            num: ItemInfo(id=self.base_unlock_id + num, name=f"{tag} {num} Unlock")
+            for num in range(1, amount + 1)
+        }
+
+item_packs: dict[str, ItemPack] = {
+    'Level': ItemPack('Level', num_levels),
+    'Race': ItemPack('Race', num_races),
 }
 
 base_race_unlock_id = 2000
 
-race_unlock_items = {
-    race_num: ItemInfo(id=base_race_unlock_id + race_num, name=f"Race {race_num} Unlock")
-    for race_num in range(1, num_races + 1)
-}
-
 level_items = [
-    *level_unlock_items.values(),
-    *race_unlock_items.values(),
+    item
+    for pack in item_packs.values()
+    for item in pack.unlock_items.values()
 ]
 
 steak_item = ItemInfo(id=10, name="Steak")

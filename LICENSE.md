@@ -17,9 +17,9 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-## The Archipelago Protocol implementation in `mods-unpacked/CodeTriangle-Archipelago/ap` is Ⓒ Jeffdev
+## The Archipelago Protocol implementation in `mods-unpacked/CodeTriangle-Archipelago/ap` is Ⓒ Spenser Haddad, Jeffdev
 
-*(based on code from his Funi Raccoon Game implementation)*
+*(based on code from the Brotato and Funi Raccoon Game implementations)*
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”),

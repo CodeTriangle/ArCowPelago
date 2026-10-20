@@ -1,8 +1,11 @@
 extends "res://scripts/playerScript.gd"
 
 
+const LOG_NAME := "CodeTriangle-Archipelago:playerScript"
+
+
 @onready var ap_client: CowApClient = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_client
-@onready var ap_item_label: ApItemLabel = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_item_label
+@onready var ap_overlay: ApOverlay = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_overlay
 
 var receiving_deathlink: bool = false
 var deaths_sent: int = 0
@@ -17,9 +20,11 @@ func die():
 	if not receiving_deathlink and ap_client.player_tags.has("DeathLink"):
 		deaths_sent += 1
 		if deaths_sent >= ap_client.deathlink_amnesty:
-			print("Sending deathlink :3")
+			ModLoaderLog.info("Sending deathlink :3", LOG_NAME)
 			ap_client.send_deathlink(ap_client.player, "Cow is dead.")
+			ap_overlay.set_text("Sending Death to your friends")
 			deaths_sent = 0
+		ap_overlay.deathlink_label.text = "Deaths: %d out of %d" % [deaths_sent, ap_client.deathlink_amnesty]
 
 
 func deathlink():
@@ -33,6 +38,6 @@ func _on_bounced_received(data):
 		deathlink()
 		var cause = data["data"].get("cause", null)
 		if cause:
-			ap_item_label.set_text(cause)
+			ap_overlay.set_text(cause)
 		else:
-			ap_item_label.set_text("Received Death from %s" % data["data"].get("source", "a friend"))
+			ap_overlay.set_text("Received Death from %s" % data["data"].get("source", "a friend"))

@@ -441,7 +441,6 @@ func _on_received_items(command):
 	for item in items:
 		var item_id = int(item["item"])
 		received_item_ids.set(item_id, received_item_ids.get(item_id, 0) + 1)
-		ModLoaderLog.debug(str(received_item_ids), LOG_NAME)
 		var item_name = null
 		if self.data_package:
 			item_name = data_package.item_id_to_name[item["item"]]

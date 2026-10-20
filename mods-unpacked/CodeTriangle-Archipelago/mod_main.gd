@@ -11,7 +11,7 @@ var translations_dir_path := ""
 var ap_client: CowApClient
 var ap_ws_connection: ApWebSocketConnection
 var ap_connect_panel: ApConnectPanel
-var ap_item_label: ApItemLabel
+var ap_overlay: ApOverlay
 
 func _init() -> void:
 	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(DIR)
@@ -69,8 +69,8 @@ func _ready() -> void:
 	ap_connect_panel.ap_client = ap_client
 	add_child(ap_connect_panel)
 
-	var label_scene: PackedScene = load("res://mods-unpacked/CodeTriangle-Archipelago/scenes/ap_item_label.tscn")
-	ap_item_label = label_scene.instantiate()
-	add_child(ap_item_label)
+	var label_scene: PackedScene = load("res://mods-unpacked/CodeTriangle-Archipelago/scenes/ap_overlay.tscn")
+	ap_overlay = label_scene.instantiate()
+	add_child(ap_overlay)
 
 	ModLoaderLog.info("Ready!", LOG_NAME)

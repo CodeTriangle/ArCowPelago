@@ -58,6 +58,17 @@ class GoalLevel(LevelSelect):
     default = 2008
 
 
+class GoalLevelStars(Range):
+    """
+    The number of stars that the player must have on their goal level to goal.
+    """
+
+    range_start = 0
+    range_end = 3
+
+    default = 3
+
+
 class LevelStarAllowedLocations(Range):
     """
     The number of star locations per level that are permitted to have progression items.
@@ -145,6 +156,7 @@ class TrapChance(Range):
 class CowOptions(PerGameCommonOptions):
     starting_level: StartingLevel
     goal_level: GoalLevel
+    goal_level_stars: GoalLevelStars
     level_star_allowed_locations: LevelStarAllowedLocations
     race_star_allowed_locations: RaceStarAllowedLocations
     ascended_level_star_allowed_locations: AscendedLevelStarAllowedLocations

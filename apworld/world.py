@@ -1,4 +1,4 @@
-from rule_builder.rules import Has
+from rule_builder.rules import Has, And
 from Options import OptionError, Option
 import settings
 import typing
@@ -125,6 +125,8 @@ class CowWorld(World):
         if self.options.starting_level.value == self.options.goal_level.value:
             raise OptionError(f"Starting level cannot be equal to goal level")
 
+        self.goal_stars_amount = self.options.total_stars.value * self.options.goal_star_percentage / 100
+
     def create_regions(self):
         menu = Region(
             name=f"Menu",
@@ -143,7 +145,29 @@ class CowWorld(World):
 
                 self.multiworld.regions.append(region)
 
-                self.create_entrance(menu, region, Has(f"{tag} {level_num} Unlock"))
+                if self.options.goal_level.current_key == f"{tag} {level_num}":
+                    if self.options.beefsanity:
+                        self.create_entrance(
+                            menu,
+                            region,
+                            And(
+                                Has(f"{tag} {level_num} Unlock"),
+                                Has("Star", self.goal_stars_amount),
+                                Has("Steak", self.options.goal_steaks.value),
+                            )
+                        )
+                    else:
+                        self.create_entrance(
+                            menu,
+                            region,
+                            And(
+                                Has(f"{tag} {level_num} Unlock"),
+                                Has("Star", self.goal_stars_amount),
+                            )
+                        )
+                    region.add_event("Victory", "Victory")
+                else:
+                    self.create_entrance(menu, region, Has(f"{tag} {level_num} Unlock"))
 
                 region.locations.append(CowLocation(self.player, pack.clear_locations[level_num], region))
 
@@ -160,27 +184,6 @@ class CowWorld(World):
                         for info in pack.steak_locations_by_level[level_num]
                     )
 
-        self.goal_stars_amount = self.options.total_stars.value * self.options.goal_star_percentage / 100
-
-        if self.options.beefsanity:
-            menu.add_event(
-                "Victory",
-                "Victory",
-                lambda state: (
-                    state.has("Star", self.player, self.goal_stars_amount) and
-                    state.has("Steak", self.player, self.options.goal_steaks.value) and
-                    state.can_reach_location(self.options.goal_level.clear_loc().name, self.player)
-                )
-            )
-        else:
-            menu.add_event(
-                "Victory",
-                "Victory",
-                lambda state: (
-                    state.has("Star", self.player, self.goal_stars_amount) and
-                    state.can_reach_location(self.options.goal_level.clear_loc().name, self.player)
-                )
-            )
 
     def create_items(self):
         itempool = []
@@ -207,7 +210,7 @@ class CowWorld(World):
                 )
             )
 
-        num_filler_items = len(self.multiworld.regions.location_cache[self.player]) - len(itempool) - 1
+        num_filler_items = len(self.multiworld.regions.location_cache[self.player]) - len(itempool)
 
         itempool.extend(
             self.create_filler_item()
@@ -223,4 +226,5 @@ class CowWorld(World):
             "beefsanity": bool(self.options.beefsanity.value),
             "goal_steaks": self.options.goal_steaks.value,
             "goal_level": list(LevelSelect.tuple_map[self.options.goal_level.value]),
+            "goal_level_stars": self.options.goal_level_stars.value,
         }

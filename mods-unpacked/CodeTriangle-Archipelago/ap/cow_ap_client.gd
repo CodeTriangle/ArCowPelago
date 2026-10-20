@@ -16,13 +16,14 @@ const LEVEL_STEAK_AMOUNTS: Array[int] = [
 const RACE_STEAK_AMOUNTS: Array[int] = [ 4, 5, 4, 5, 4, 7, 4, 3 ]
 
 const ASCENDED_LEVEL_STEAK_AMOUNTS: Array[int] = [
-    2, 3, 3, 2, 2,
-    2, 2, 4, 2, 3,
-    3, 3, 3, 3, 10,
-    3, 4, 5, 4, 4,
+	2, 3, 3, 2, 2,
+	2, 2, 4, 2, 3,
+	3, 3, 3, 3, 10,
+	3, 4, 5, 4, 4,
 ]
 
 const STEAK_STRIDE = 100
+
 
 class LevelPackInfo:
 	var client: CowApClient
@@ -75,11 +76,61 @@ var levels = LevelPackInfo.new(self, 0, LEVEL_STEAK_AMOUNTS)
 var races = LevelPackInfo.new(self, 1, RACE_STEAK_AMOUNTS)
 var ascended_levels = LevelPackInfo.new(self, 2, ASCENDED_LEVEL_STEAK_AMOUNTS)
 
+var packs: Dictionary[String, LevelPackInfo] = {
+	"level": levels,
+	"race": races,
+	"ascended_level": ascended_levels,
+}
+
+var goal_stars = 0
+var goal_steaks = 0
+var current_stars = 0
+var current_steaks = 0
+
+var goal_level_type: String
+var goal_level_num: int
+
 var timer: SceneTreeTimer
 var deathlink_amnesty: int = 0
 
 
-func _set_connection_state(state: int, error: int = 0):
-	super(state, error)
+func _ready() -> void:
+	super()
+	item_received.connect(_cowap_on_item_received)
+	connection_state_changed.connect(_cowap_on_connection_state_change)
+
+
+func check_for_goal() -> bool:
+	# legacy check -- only run if there is no goal level
+	if goal_level_type == null and goal_level_num == null and current_stars >= goal_stars:
+		if slot_data["beefsanity"] and current_steaks < goal_steaks:
+			return false
+
+		set_status(ApTypes.ClientStatus.CLIENT_GOAL)
+		return true
+	return false
+
+
+func _cowap_on_connection_state_change(state: int, _error: int = 0):
 	if state == ConnectState.CONNECTED_TO_MULTIWORLD:
 		timer = get_tree().create_timer(0.5)
+
+		var goal_level = slot_data.get("goal_level", null)
+
+		if goal_level != null:
+			goal_level_type = goal_level[0]
+			goal_level_num = int(goal_level[1])
+
+		goal_stars = int(slot_data["goal_stars"])
+		goal_steaks = int(slot_data["goal_steaks"])
+		current_stars = int(received_item_ids.get(int(data_package.item_name_to_id["Star"]), 0))
+		current_steaks = int(received_item_ids.get(int(data_package.item_name_to_id["Steak"]), 0))
+
+
+func _cowap_on_item_received(item_name: String, _item: Dictionary):
+	if item_name == "Star":
+		current_stars += 1
+		check_for_goal()
+	elif item_name == "Steak":
+		current_steaks += 1
+		check_for_goal()

@@ -7,15 +7,26 @@
 	"dependencies": [],
 	"extra": {
 		"godot": {
-			"authors": ["CodeTriangle"],
-			"tags": ["Archipelago", "Randomizer"],
+			"authors": [
+				"CodeTriangle"
+			],
+			"tags": [
+				"Archipelago",
+				"Randomizer"
+			],
 			"description_rich": "",
 			"optional_dependencies": [],
 			"load_before": [],
 			"incompatibilities": [],
-			"compatible_mod_loader_version": ["7.0.1"],
-			"compatible_game_version": ["0.0.0"],
-			"config_schema": {}
+			"compatible_mod_loader_version": [
+				"7.0.1"
+			],
+			"compatible_game_version": [
+				"0.0.0"
+			],
+			"config_schema": {
+
+			}
 		}
 	}
 }

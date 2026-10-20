@@ -12,12 +12,6 @@ var texture_gray = load("res://mods-unpacked/CodeTriangle-Archipelago/assets/ap_
 var texture_colored = load("res://mods-unpacked/CodeTriangle-Archipelago/assets/ap_logo_80_outline.png")
 
 
-var goal_stars = 0
-var goal_steaks = 0
-var current_stars = 0
-var current_steaks = 0
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	set_color()
@@ -32,7 +26,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	set_color()
 
 
@@ -54,40 +48,21 @@ func set_text_box_texts() -> void:
 	if active:
 		star_counter.visible = true
 
-		star_counter.text = "%d out of %d" % [current_stars, goal_stars]
+		star_counter.text = "%d out of %d" % [ap_client.current_stars, ap_client.goal_stars]
 
 		if ap_client.slot_data["beefsanity"]:
 			steak_counter.visible = true
-			steak_counter.text = "%d out of %d" % [current_steaks, goal_steaks]
-
-
-func check_for_goal() -> bool:
-	if current_stars >= goal_stars:
-		if ap_client.slot_data["beefsanity"] and current_steaks < goal_steaks:
-			return false
-
-		ap_client.set_status(ApTypes.ClientStatus.CLIENT_GOAL)
-		return true
-	return false
+			steak_counter.text = "%d out of %d" % [ap_client.current_steaks, ap_client.goal_steaks]
 
 
 func _on_connection_state_changed(state: CowApClient.ConnectState, _error):
 	if state == CowApClient.ConnectState.CONNECTED_TO_MULTIWORLD:
-		goal_stars = int(ap_client.slot_data["goal_stars"])
-		goal_steaks = int(ap_client.slot_data["goal_steaks"])
-		current_stars = int(ap_client.received_item_ids.get(int(ap_client.data_package.item_name_to_id["Star"]), 0))
-		current_steaks = int(ap_client.received_item_ids.get(int(ap_client.data_package.item_name_to_id["Steak"]), 0))
 		set_text_box_texts()
 	else:
 		star_counter.visible = false
 		steak_counter.visible = false
 
+
 func _on_item_received(item_name: String, _item: Dictionary):
-	if item_name == "Star":
-		current_stars += 1
+	if item_name == "Star" or item_name == "Steak":
 		set_text_box_texts()
-		check_for_goal()
-	elif item_name == "Steak":
-		current_steaks += 1
-		set_text_box_texts()
-		check_for_goal()

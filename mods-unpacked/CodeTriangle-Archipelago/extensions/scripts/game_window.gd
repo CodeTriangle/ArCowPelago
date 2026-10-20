@@ -21,15 +21,23 @@ func level_beaten():
 	var current_level_path = levels[current_level_index]
 	var true_level_name = current_level_path.get_file().trim_suffix(".tscn")
 
-	var pack: CowApClient.LevelPackInfo
 	var num
+	var level_type
+	var pack: CowApClient.LevelPackInfo
+
 
 	if true_level_name.begins_with("level_"):
-		num = int(true_level_name.trim_prefix("level_"))
-		pack = ap_client.ascended_levels if Global.is_ascended else ap_client.levels
+		num = int(true_level_name.substr(6))
+		if Global.is_ascended:
+			pack = ap_client.ascended_levels
+			level_type = "Ascended Level"
+		else:
+			pack = ap_client.levels
+			level_type = "Level"
 	elif true_level_name.begins_with("race_"):
-		num = int(true_level_name.trim_prefix("race_"))
+		num = int(true_level_name.substr(5))
 		pack = ap_client.races
+		level_type = "Race"
 
 	var clear_loc = pack.get_clear_location_id(num)
 	var star_loc_base = pack.get_star_low_location_id(num)
@@ -39,15 +47,25 @@ func level_beaten():
 	var thresholds = star_thresholds.get(true_level_name, [0.0, 0.0, 0.0])
 
 	var display_time = floor(level_time * 100.0) / 100.0
+	var stars
 
 	if display_time <= thresholds[2]:
+		stars = 1
 		ap_client.check_location(star_loc_base + 0)
 	if display_time <= thresholds[1]:
+		stars = 2
 		ap_client.check_location(star_loc_base + 1)
 	if display_time <= thresholds[0]:
+		stars = 3
 		ap_client.check_location(star_loc_base + 2)
 
 	next_button.disabled = true
+
+	print(ap_client.goal_level_type, ap_client.goal_level_num)
+	print(level_type, num)
+
+	if ap_client.goal_level_type == level_type and ap_client.goal_level_num == num and stars >= ap_client.slot_data["goal_level_stars"]:
+		ap_client.set_status(ApTypes.ClientStatus.CLIENT_GOAL)
 
 
 func _on_item_received(item_name: String, _item: Dictionary):

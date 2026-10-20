@@ -1,10 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b28kfntg3ruei"]
 
 [ext_resource type="Script" uid="uid://cnb5fd6t2jlvh" path="res://mods-unpacked/CodeTriangle-Archipelago/scripts/ap_item_label.gd" id="1_b63sn"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_aab3i"]
-stacked_outline_count = 1
-stacked_outline_0/size = 5
+[ext_resource type="LabelSettings" uid="uid://ltmwkqrlgpkq" path="res://mods-unpacked/CodeTriangle-Archipelago/res/ap_item_label.tres" id="2_aab3i"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 layer = 256
@@ -22,6 +19,6 @@ offset_right = 320.0
 offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
-label_settings = SubResource("LabelSettings_aab3i")
+label_settings = ExtResource("2_aab3i")
 horizontal_alignment = 1
 text_overrun_behavior = 3

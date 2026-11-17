@@ -128,11 +128,6 @@ func recalculate_level_buttons() -> void:
 				):
 					level_button.disabled = true
 
-			ModLoaderLog.debug(
-				level_type + " " + str(number) + " (id " + str(item_id) + "): " + str(not level_button.disabled),
-				LOG_NAME
-			)
-
 			index += 1
 
 

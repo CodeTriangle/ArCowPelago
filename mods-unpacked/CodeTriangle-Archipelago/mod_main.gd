@@ -11,7 +11,7 @@ var translations_dir_path := ""
 var ap_client: CowApClient
 var ap_ws_connection: ApWebSocketConnection
 var ap_connect_panel: ApConnectPanel
-var ap_overlay: ApOverlay
+var ap_overlay
 
 func _init() -> void:
 	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(DIR)

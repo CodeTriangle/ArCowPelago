@@ -5,7 +5,7 @@ const LOG_NAME := "CodeTriangle-Archipelago:playerScript"
 
 
 @onready var ap_client: CowApClient = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_client
-@onready var ap_overlay: ApOverlay = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_overlay
+@onready var ap_overlay = get_node("/root/ModLoader/CodeTriangle-Archipelago").ap_overlay
 
 var receiving_deathlink: bool = false
 var deaths_sent: int = 0

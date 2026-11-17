@@ -1,10 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://b28kfntg3ruei"]
+[gd_scene load_steps=4 format=3 uid="uid://ck6sj5mh5l18u"]
 
-[ext_resource type="Script" uid="uid://cnb5fd6t2jlvh" path="res://mods-unpacked/CodeTriangle-Archipelago/scripts/ap_overlay.gd" id="1_es3uv"]
-[ext_resource type="LabelSettings" uid="uid://ltmwkqrlgpkq" path="res://mods-unpacked/CodeTriangle-Archipelago/res/ap_item_label.tres" id="2_nr5pj"]
+[ext_resource type="Script" uid="uid://bwucly1xhklmm" path="res://mods-unpacked/CodeTriangle-Archipelago/scripts/ap_overlay.gd" id="1_es3uv"]
+[ext_resource type="LabelSettings" uid="uid://ltmwkqrlgpkq" path="res://mods-unpacked/CodeTriangle-Archipelago/res/ap_item_label.tres" id="2_es3uv"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
-layer = 256
+[sub_resource type="LabelSettings" id="LabelSettings_nr5pj"]
+
+[node name="ApOverlay" type="CanvasLayer"]
 script = ExtResource("1_es3uv")
 
 [node name="ItemLabel" type="Label" parent="."]
@@ -19,7 +20,7 @@ offset_right = 320.0
 offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
-label_settings = ExtResource("2_nr5pj")
+label_settings = ExtResource("2_es3uv")
 horizontal_alignment = 1
 text_overrun_behavior = 3
 
@@ -35,6 +36,6 @@ offset_right = 307.0
 offset_bottom = -223.0
 grow_horizontal = 2
 grow_vertical = 2
-label_settings = ExtResource("2_nr5pj")
+label_settings = ExtResource("2_es3uv")
 horizontal_alignment = 1
 text_overrun_behavior = 3
